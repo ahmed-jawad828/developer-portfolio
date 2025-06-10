@@ -7,14 +7,14 @@ export const experiences = [
   },
   {
     id: 2,
-    title: "Project Tainee",
+    title: "Project Trainee",
     company: "afiniti",
     duration: "(July 2019 - Sept 2019)"
   },
   {
     id: 3,
     title: "Data Analyst",
-    company: "C-CARGO Research Group.",
-    duration: "(Feb 2018 - Juky 2018)"
+    company: "C-CARGO Research Group",
+    duration: "(Feb 2018 - July 2018)"
   }
 ]
