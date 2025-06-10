@@ -16,6 +16,9 @@ const GlowCard = ({ children, identifier }) => {
     const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
     const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
 
+    // Early return if elements don't exist
+    if (!CONTAINER || !CARDS.length) return;
+
     const CONFIG = {
       proximity: 40,
       spread: 80,
@@ -56,8 +59,6 @@ const GlowCard = ({ children, identifier }) => {
       }
     };
 
-    document.body.addEventListener('pointermove', UPDATE);
-
     const RESTYLE = () => {
       CONTAINER.style.setProperty('--gap', CONFIG.gap);
       CONTAINER.style.setProperty('--blur', CONFIG.blur);
@@ -71,11 +72,15 @@ const GlowCard = ({ children, identifier }) => {
     RESTYLE();
     UPDATE();
 
+    document.body.addEventListener('pointermove', UPDATE);
+
     // Cleanup event listener
     return () => {
-      document.body.removeEventListener('pointermove', UPDATE);
+      if (typeof document !== 'undefined') {
+        document.body.removeEventListener('pointermove', UPDATE);
+      }
     };
-  }, [identifier]);
+  }, [isBrowser, identifier]); // Added isBrowser to dependency array
 
   return (
     <div className={`glow-container-${identifier} glow-container`}>
