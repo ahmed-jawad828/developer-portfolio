@@ -9,8 +9,18 @@ const SCROLL_THRESHOLD = 50;
 
 const ScrollToTop = () => {
   const [btnCls, setBtnCls] = useState(DEFAULT_BTN_CLS);
+  const [isBrowser, setIsBrowser] = useState(false);
+
+  // Set isBrowser to true once component mounts
+  useEffect(() => {
+    setIsBrowser(true);
+    setBtnCls(DEFAULT_BTN_CLS + " hidden"); // Initial state should be hidden
+  }, []);
 
   useEffect(() => {
+    // Skip execution during SSR
+    if (!isBrowser) return;
+    
     const handleScroll = () => {
       if (window.scrollY > SCROLL_THRESHOLD) {
         setBtnCls(DEFAULT_BTN_CLS.replace(" hidden", ""));
@@ -18,13 +28,20 @@ const ScrollToTop = () => {
         setBtnCls(DEFAULT_BTN_CLS + " hidden");
       }
     };
+    
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    
     return () => {
       window.removeEventListener("scroll", handleScroll, { passive: true });
     };
-  }, []);
+  }, [isBrowser]);
 
-  const onClickBtn = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  const onClickBtn = () => {
+    if (isBrowser) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <button className={btnCls} onClick={onClickBtn}>

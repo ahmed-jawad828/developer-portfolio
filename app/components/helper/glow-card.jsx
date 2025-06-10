@@ -1,9 +1,18 @@
 "use client"
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-const GlowCard = ({ children , identifier}) => {
+const GlowCard = ({ children, identifier }) => {
+  const [isBrowser, setIsBrowser] = useState(false);
+  
   useEffect(() => {
+    setIsBrowser(true);
+  }, []);
+  
+  useEffect(() => {
+    // Skip execution during SSR
+    if (!isBrowser) return;
+    
     const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
     const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
 
