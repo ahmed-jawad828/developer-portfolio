@@ -1,19 +1,17 @@
 "use client"
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const GlowCard = ({ children, identifier }) => {
-  const [isBrowser, setIsBrowser] = useState(false);
+  const containerRef = useRef(null);
   
   useEffect(() => {
-    setIsBrowser(true);
-  }, []);
-  
-  useEffect(() => {
-    // Skip execution during SSR
-    if (!isBrowser) return;
+    // Robust browser detection - exit early if not in browser
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
     
-    const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
+    const CONTAINER = containerRef.current;
     const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
 
     // Early return if elements don't exist
@@ -29,14 +27,19 @@ const GlowCard = ({ children, identifier }) => {
     };
 
     const UPDATE = (event) => {
+      // Additional safety check for event
+      if (!event || typeof event.x !== 'number' || typeof event.y !== 'number') {
+        return;
+      }
+
       for (const CARD of CARDS) {
         const CARD_BOUNDS = CARD.getBoundingClientRect();
 
         if (
-          event?.x > CARD_BOUNDS.left - CONFIG.proximity &&
-          event?.x < CARD_BOUNDS.left + CARD_BOUNDS.width + CONFIG.proximity &&
-          event?.y > CARD_BOUNDS.top - CONFIG.proximity &&
-          event?.y < CARD_BOUNDS.top + CARD_BOUNDS.height + CONFIG.proximity
+          event.x > CARD_BOUNDS.left - CONFIG.proximity &&
+          event.x < CARD_BOUNDS.left + CARD_BOUNDS.width + CONFIG.proximity &&
+          event.y > CARD_BOUNDS.top - CONFIG.proximity &&
+          event.y < CARD_BOUNDS.top + CARD_BOUNDS.height + CONFIG.proximity
         ) {
           CARD.style.setProperty('--active', 1);
         } else {
@@ -49,7 +52,7 @@ const GlowCard = ({ children, identifier }) => {
         ];
 
         let ANGLE =
-          (Math.atan2(event?.y - CARD_CENTER[1], event?.x - CARD_CENTER[0]) *
+          (Math.atan2(event.y - CARD_CENTER[1], event.x - CARD_CENTER[0]) *
             180) /
           Math.PI;
 
@@ -69,21 +72,26 @@ const GlowCard = ({ children, identifier }) => {
       );
     };
 
+    // Initialize styles and effects
     RESTYLE();
-    UPDATE();
+    
+    // Add event listener with passive option for better performance
+    document.body.addEventListener('pointermove', UPDATE, { passive: true });
 
-    document.body.addEventListener('pointermove', UPDATE);
-
-    // Cleanup event listener
+    // Cleanup function
     return () => {
-      if (typeof document !== 'undefined') {
+      // Double-check document exists before cleanup
+      if (typeof document !== 'undefined' && document.body) {
         document.body.removeEventListener('pointermove', UPDATE);
       }
     };
-  }, [isBrowser, identifier]); // Added isBrowser to dependency array
+  }, [identifier]); // Only identifier in dependencies since we're using refs
 
   return (
-    <div className={`glow-container-${identifier} glow-container`}>
+    <div 
+      ref={containerRef}
+      className={`glow-container-${identifier} glow-container`}
+    >
       <article className={`glow-card glow-card-${identifier} h-fit cursor-pointer border border-[#2a2e5a] transition-all duration-300 relative bg-[#101123] text-gray-200 rounded-xl hover:border-transparent w-full`}>
         <div className="glows"></div>
         {children}
