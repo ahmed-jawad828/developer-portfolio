@@ -82,14 +82,19 @@ import kubernetes from '../app/assets/svg/skills/kubernetes.svg'
 import linux from '../app/assets/svg/skills/linux.svg'
 import sqlalchemy from '../app/assets/svg/skills/sqlalchemy.svg'
 import fastapi from '../app/assets/svg/skills/fastapi.svg'
-
-
+import stripe from '../app/assets/svg/skills/stripe.svg'
+import tailwindcss from '../app/assets/svg/skills/tailwindcss.svg'
+import nodejs from '../app/assets/svg/skills/nodejs.svg'
 
 export const skillsImage = (skill) => {
   const skillID = skill.toLowerCase();
   switch (skillID) {
     case 'gcp':
       return gcp;
+    case 'node js':
+      return nodejs;
+    case 'tailwindcss':
+      return tailwindcss;
     case 'html':
       return html;
     case 'photoshop':
@@ -254,6 +259,8 @@ export const skillsImage = (skill) => {
       return sqlalchemy;
     case 'fastapi':
       return fastapi;
+    case 'stripe':
+      return stripe;
     default:
       break;
   }

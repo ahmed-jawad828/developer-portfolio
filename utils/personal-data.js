@@ -1,0 +1,17 @@
+export const personalData = {
+    name: "JAWAD",
+    profile: "/profile.png",
+    designation: "Full-Stack Software Developer",
+    description: "My name is JAWAD AHMED....",
+    email: "ahmedjawad401@gmail.com",
+    phone: "+923465191457",
+    address: "Islamabad, Pakistan",
+    github: "https://github.com/ahmed-jawad828",
+    facebook: "https://www.facebook.com/jawa.ahmed828/",
+    linkedIn: "https://www.linkedin.com/in/jawad-basit/",
+    twitter: "https://twitter.com/jawadbasitt",
+    stackOverflow: "https://stackoverflow.com/users/16840768/abu-said",
+    leetcode: "https://leetcode.com/said3812/",
+    devUsername: "ahmed-jawad828",
+    resume: "...",
+  };    
